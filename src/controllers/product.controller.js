@@ -38,10 +38,6 @@ const productController = {
             })
     },
     remove: (req, res) => {
-        // const requests = {
-        //     ...req.body,
-        //     id: req.params.id
-        // }
         return productModel.remove(req.params.id)
             .then((result) => {
                 return res.status(200).send({ message: "succes", data: result })

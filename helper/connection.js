@@ -11,12 +11,9 @@ const db = new Client({
 db.connect((err)=> {
     if(err) {
         console.log('db connection error', err)
+    } else {
+        console.log('Database connected - PostgreSQL');
     }
-    // if(!err) {
-    //     console.log('database berhasil tersambung')
-    // }else {
-    //     console.log('db error connnection', err)
-    // }
 })
 
 module.exports = db
