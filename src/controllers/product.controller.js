@@ -1,28 +1,31 @@
 const productModel = require("../model/product.model")
+const formResponse = require("../../helper/response")
 
 const productController = {
-    read: (req, res) => {
-        return productModel.read()
-            .then((result) => {
-                return res.status(200).send({ message: "succes", data: result })
-            }).catch((error) => {
-                return res.status(500).send({ message: error })
-            })
-    },
-    readDetail: (req, res) => {
-        return productModel.readDetail(req.params.id)
-            .then((result) => {
-                return res.status(200).send({ message: "succes", data: result })
-            }).catch((error) => {
-                return res.status(500).send({ message: error })
-            })
-    },
     create: (req, res) => {
         return productModel.create(req.body)
             .then((result) => {
-                return res.status(201).send({ message: "succes", data: result })
+                return formResponse(201, "success", result, res)
             }).catch((error) => {
-                return res.status(500).send({ message: error })
+                return formResponse(500, error)
+            })
+    },
+    
+    read: (req, res) => {
+        return productModel.read(req.query)
+            .then((result) => {
+                return formResponse(200, "success", result, res)
+            }).catch((error) => {
+                return formResponse(500, error)
+            })
+    },
+
+    readDetail: (req, res) => {
+        return productModel.readDetail(req.params.id)
+            .then((result) => {
+                return formResponse(200, "success", result, res)
+            }).catch((error) => {
+                return formResponse(500, error)
             })
     },
     update: (req, res) => {
@@ -32,17 +35,17 @@ const productController = {
         }
         return productModel.update(request)
             .then((result) => {
-                return res.status(201).send({ message: "succes", data: result })
+                return formResponse(201, "success", result, res)
             }).catch((error) => {
-                return res.status(500).send({ message: error })
+                return formResponse(500, error)
             })
     },
     remove: (req, res) => {
         return productModel.remove(req.params.id)
             .then((result) => {
-                return res.status(200).send({ message: "succes", data: result })
+                return formResponse(200, "success", result, res)
             }).catch((error) => {
-                return res.status(500).send({ message: error })
+                return formResponse(500, error)
             })
     }
 }

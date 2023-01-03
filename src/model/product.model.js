@@ -1,3 +1,4 @@
+const { query } = require('express');
 const db = require('../../helper/connection')
 const { v4: uuidv4 } = require('uuid');
 
@@ -15,14 +16,24 @@ const productModel = {
                     }
                 }
             )
-        })
+        }) 
     },
 
     // READ
-    read: () => {
+    query: (queryParams, sortType = 'asc',limit = 50) => {
+        if (queryParams.search && queryParams.category) {
+            return `WHERE title LIKE '%${queryParams.search}%' AND category LIKE '${queryParams.category}%' ORDER BY title ${sortType} LIMIT ${limit}`
+        } else if (queryParams.search || queryParams.category) {
+            return `WHERE title LIKE '%${queryParams.search}%' OR category LIKE '${queryParams.category}%' ORDER BY title ${sortType} LIMIT ${limit}`
+        } else {
+            return `ORDER BY title ${sortType} LIMIT ${limit}`
+        } 
+    },
+
+    read: function (queryParams) {
         return new Promise((resolve, reject) => {
             db.query(
-                `SELECT * from products`,
+                `SELECT * from products ${this.query(queryParams, queryParams.sortBy, queryParams.limit)}`,
                 (err, result) => {
                     if (err) {
                         return reject( err.message )
@@ -33,6 +44,7 @@ const productModel = {
             )
         })
     },  
+
     readDetail: (id) => {
         return new Promise((resolve, reject) => {
             db.query(
@@ -80,7 +92,7 @@ const productModel = {
                     if (err) {
                         return reject( err.message )
                     } else {
-                        return resolve(`Success delete`)
+                        return resolve(`products ${id} has been deleted`)
                     }
                 }
             )
