@@ -2,17 +2,17 @@ const { query } = require('express');
 const db = require('../../helper/connection')
 const { v4: uuidv4 } = require('uuid');
 
-const productModel = {
+const productDetailModel = {
     // CREATE
-    create: ({ title, img, price, category }) => {
+    create: ({ title, img, category, price, size, quantity, delivery, time }) => {
         return new Promise((resolve, reject) => {
             db.query(
-                `INSERT INTO products (id, title, img, price, category) VALUES ('${uuidv4()}','${title}','${img}','${price}','${category}')`,
+                `INSERT INTO products-detail (id, title, img, category, price, size, quantity, delivery, time) VALUES ('${uuidv4()}','${title}','${img}','${category}','${price}', '${size}', '${quantity}', '${delivery}', '${time}' )`,
                 (err, result) => {
                     if (err) {
                         return reject(err.message)
                     } else {
-                        return resolve({ title, img, price, category })
+                        return resolve({ title, img, category, price, size, quantity, delivery, time })
                     }
                 }
             )
@@ -20,20 +20,20 @@ const productModel = {
     },
 
     // READ
-    query: (queryParams, sortBy = 'asc', limit = 25, offset = 0) => {
+    query: (queryParams, sortType = 'asc', limit = 50) => {
         if (queryParams.search && queryParams.category) {
-            return `WHERE title LIKE '%${queryParams.search}%' AND category LIKE '${queryParams.category}%' ORDER BY title ${sortBy} LIMIT ${limit} OFFSET ${offset}`
+            return `WHERE title LIKE '%${queryParams.search}%' AND category LIKE '${queryParams.category}%' ORDER BY title ${sortType} LIMIT ${limit}`
         } else if (queryParams.search || queryParams.category) {
-            return `WHERE title LIKE '%${queryParams.search}%' OR category LIKE '${queryParams.category}%' ORDER BY title ${sortBy} LIMIT ${limit} OFFSET ${offset}`
+            return `WHERE title LIKE '%${queryParams.search}%' OR category LIKE '${queryParams.category}%' ORDER BY title ${sortType} LIMIT ${limit}`
         } else {
-            return `ORDER BY title ${sortBy} LIMIT ${limit} OFFSET ${offset}`
+            return `ORDER BY title ${sortType} LIMIT ${limit}`
         }
     },
 
     read: function (queryParams) {
         return new Promise((resolve, reject) => {
             db.query(
-                `SELECT * from products ${this.query(queryParams, queryParams.sortBy, queryParams.limit, queryParams.offset)}`,
+                `SELECT * from products-detail ${this.query(queryParams, queryParams.sortBy, queryParams.limit)}`,
                 (err, result) => {
                     if (err) {
                         return reject(err.message)
@@ -48,7 +48,7 @@ const productModel = {
     readDetail: (id) => {
         return new Promise((resolve, reject) => {
             db.query(
-                `SELECT * from products WHERE id='${id}'`,
+                `SELECT * from products-detail WHERE id='${id}'`,
                 (err, result) => {
                     if (err) {
                         return reject(err.message)
@@ -63,12 +63,12 @@ const productModel = {
     // UPDATE
     update: ({ id, title, img, price, category }) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT * FROM products WHERE id='${id}'`, (err, result) => {
+            db.query(`SELECT * FROM products-detail WHERE id='${id}'`, (err, result) => {
                 if (err) {
                     return reject(err.message);
                 } else {
                     db.query(
-                        `UPDATE products SET title='${title || result.rows[0].title}', img='${img || result.rows[0].img}',price='${price || result.rows[0].price}', category='${category || result.rows[0].category}' WHERE id='${id}'`,
+                        `UPDATE products-detail SET title='${title || result.rows[0].title}', img='${img || result.rows[0].img}',price='${price || result.rows[0].price}', category='${category || result.rows[0].category}' WHERE id='${id}'`,
                         (err, result) => {
                             if (err) {
                                 return reject(err.message)
@@ -87,7 +87,7 @@ const productModel = {
     remove: (id) => {
         return new Promise((resolve, reject) => {
             db.query(
-                `DELETE from products WHERE id='${id}'`,
+                `DELETE from products-detail WHERE id='${id}'`,
                 (err, result) => {
                     if (err) {
                         return reject(err.message)
@@ -100,4 +100,4 @@ const productModel = {
     }
 }
 
-module.exports = productModel
+module.exports = productDetailModel
