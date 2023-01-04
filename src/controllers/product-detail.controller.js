@@ -24,7 +24,11 @@ const productDetailController = {
     readDetail: (req, res) => {
         return productDetailModel.readDetail(req.params.id)
             .then((result) => {
-                return formResponse(200, "success", result, res)
+                if (result != null) {
+                    return res.status(200).send({ message: "Success", data: result })
+                } else {
+                    return res.status(404).send({ message: "Sorry data not found! Please check your input ID!" })
+                }
             }).catch((error) => {
                 return formResponse(500, error)
             })
