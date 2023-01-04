@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express();
-const validation = require('../../helper/validation/validationProduct')
+const validation = require('../../src/middlewares/validationProduct')
 
 // import controller
 const productController = require('../controllers/product.controller')

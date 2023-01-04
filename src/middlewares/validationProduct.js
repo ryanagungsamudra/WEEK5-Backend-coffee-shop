@@ -23,6 +23,7 @@ const rulesProduct = [
         .trim()
         .escape(),
 ]
+
 // RESPONSE AND CONDITION
 const validation = [
     //Rules
