@@ -3,8 +3,8 @@ require('dotenv').config();
 const { urlencoded, json } = require("express");
 const express = require("express");
 const app = express();
-const cors = require('cors')
-const router = require('./src/routes/index')
+const cors = require('cors');
+const router = require('./src/routes/index');
 
 // menerima application/x-www-form-urlencoded
 app.use(urlencoded({ extended: true }));
