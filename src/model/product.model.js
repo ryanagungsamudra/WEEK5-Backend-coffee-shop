@@ -1,5 +1,5 @@
 const { query } = require('express');
-const db = require('../../helper/connection')
+const db = require('../../helper/connection');
 const { v4: uuidv4 } = require('uuid');
 
 const productModel = {

@@ -1,6 +1,6 @@
 const Pagination = {
     buildOffset: (page, limit) => {
-        let result = (page - 1) * limit + 1
+        let result = (page - 1) * limit
         return result ? result : 0
     }
 }
