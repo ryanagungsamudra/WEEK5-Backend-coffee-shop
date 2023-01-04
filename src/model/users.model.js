@@ -26,9 +26,9 @@ const usersModel = {
         if (!search && !name) {
             return orderQuery
         } else if (search && name) {
-            return `WHERE name LIKE '%${search}%' AND name LIKE '${name}%' ${orderQuery}`
+            return `WHERE name ILIKE '%${search}%' AND name ILIKE '${name}%' ${orderQuery}`
         } else if (search || name) {
-            return `WHERE name LIKE '%${search}%' OR name LIKE '${name}%' ${orderQuery}`
+            return `WHERE name ILIKE '%${search}%' OR name ILIKE '${name}%' ${orderQuery}`
         } else {
             return orderQuery
         }

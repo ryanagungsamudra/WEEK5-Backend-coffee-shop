@@ -26,9 +26,9 @@ const productModel = {
         if (!search && !category) {
             return orderQuery
         } else if (search && category) {
-            return `WHERE title LIKE '%${search}%' AND category LIKE '${category}%' ${orderQuery}`
+            return `WHERE title ILIKE '%${search}%' AND category ILIKE '${category}%' ${orderQuery}`
         } else if (search || category) {
-            return `WHERE title LIKE '%${search}%' OR category LIKE '${category}%' ${orderQuery}`
+            return `WHERE title ILIKE '%${search}%' OR category ILIKE '${category}%' ${orderQuery}`
         } else {
             return orderQuery
         }
