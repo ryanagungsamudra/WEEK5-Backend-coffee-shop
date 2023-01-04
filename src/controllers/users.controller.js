@@ -1,18 +1,19 @@
-const productDetailModel = require("../model/product-detail.model")
-const formResponse = require("../../helper/response")
+const usersModel = require("../model/users.model")
+const { Pagination, formResponse } = require("../../helper")
 
-const productDetailController = {
+const usersController = {
     create: (req, res) => {
-        return productDetailModel.create(req.body)
+        return usersModel.create(req.body)
             .then((result) => {
                 return formResponse(201, "success", result, res)
             }).catch((error) => {
                 return formResponse(500, error)
             })
     },
-
     read: (req, res) => {
-        return productDetailModel.read(req.query)
+        let { search, name, sortBy, page, limit } = req.query
+        let offset = Pagination.buildOffset(page, limit)
+        return usersModel.read(search, name, sortBy, limit, offset)
             .then((result) => {
                 return formResponse(200, "success", result, res)
             }).catch((error) => {
@@ -21,7 +22,7 @@ const productDetailController = {
     },
 
     readDetail: (req, res) => {
-        return productDetailModel.readDetail(req.params.id)
+        return usersModel.readDetail(req.params.id)
             .then((result) => {
                 return formResponse(200, "success", result, res)
             }).catch((error) => {
@@ -33,7 +34,7 @@ const productDetailController = {
             ...req.body,
             id: req.params.id
         }
-        return productDetailModel.update(request)
+        return usersModel.update(request)
             .then((result) => {
                 return formResponse(201, "success", result, res)
             }).catch((error) => {
@@ -41,7 +42,7 @@ const productDetailController = {
             })
     },
     remove: (req, res) => {
-        return productDetailModel.remove(req.params.id)
+        return usersModel.remove(req.params.id)
             .then((result) => {
                 return formResponse(200, "success", result, res)
             }).catch((error) => {
@@ -50,4 +51,4 @@ const productDetailController = {
     }
 }
 
-module.exports = productDetailController
+module.exports = usersController

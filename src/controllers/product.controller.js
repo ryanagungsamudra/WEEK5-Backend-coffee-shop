@@ -1,5 +1,5 @@
 const productModel = require("../model/product.model")
-const formResponse = require("../../helper/response")
+const { Pagination, formResponse } = require("../../helper")
 
 const productController = {
     create: (req, res) => {
@@ -10,9 +10,10 @@ const productController = {
                 return formResponse(500, error)
             })
     },
-    
     read: (req, res) => {
-        return productModel.read(req.query)
+        let { search, category, sortBy, page, limit } = req.query
+        let offset = Pagination.buildOffset(page, limit)
+        return productModel.read(search, category, sortBy, limit, offset)
             .then((result) => {
                 return formResponse(200, "success", result, res)
             }).catch((error) => {

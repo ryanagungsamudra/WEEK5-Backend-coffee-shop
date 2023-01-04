@@ -20,20 +20,24 @@ const productModel = {
     },
 
     // READ
-    query: (queryParams, sortBy = 'asc', limit = 25, offset = 0) => {
-        if (queryParams.search && queryParams.category) {
-            return `WHERE title LIKE '%${queryParams.search}%' AND category LIKE '${queryParams.category}%' ORDER BY title ${sortBy} LIMIT ${limit} OFFSET ${offset}`
-        } else if (queryParams.search || queryParams.category) {
-            return `WHERE title LIKE '%${queryParams.search}%' OR category LIKE '${queryParams.category}%' ORDER BY title ${sortBy} LIMIT ${limit} OFFSET ${offset}`
+    query: (search, category, sortBy, limit, offset) => {
+        let orderQuery = `ORDER BY title ${sortBy} LIMIT ${limit} OFFSET ${offset}`
+
+        if (!search && !category) {
+            return orderQuery
+        } else if (search && category) {
+            return `WHERE title LIKE '%${search}%' AND category LIKE '${category}%' ${orderQuery}`
+        } else if (search || category) {
+            return `WHERE title LIKE '%${search}%' OR category LIKE '${category}%' ${orderQuery}`
         } else {
-            return `ORDER BY title ${sortBy} LIMIT ${limit} OFFSET ${offset}`
+            return orderQuery
         }
     },
 
-    read: function (queryParams) {
+    read: function (search, category, sortBy = 'ASC', limit = 25, offset = 0) {
         return new Promise((resolve, reject) => {
             db.query(
-                `SELECT * from products ${this.query(queryParams, queryParams.sortBy, queryParams.limit, queryParams.offset)}`,
+                `SELECT * from products ${this.query(search, category, sortBy, limit, offset)}`,
                 (err, result) => {
                     if (err) {
                         return reject(err.message)
@@ -45,20 +49,20 @@ const productModel = {
         })
     },
 
-    readDetail: (id) => {
-        return new Promise((resolve, reject) => {
-            db.query(
-                `SELECT * from products WHERE id='${id}'`,
-                (err, result) => {
-                    if (err) {
-                        return reject(err.message)
-                    } else {
-                        return resolve(result.rows[0])
-                    }
+readDetail: (id) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            `SELECT * from products WHERE id='${id}'`,
+            (err, result) => {
+                if (err) {
+                    return reject(err.message)
+                } else {
+                    return resolve(result.rows[0])
                 }
-            );
-        })
-    },
+            }
+        );
+    })
+},
 
     // UPDATE
     update: ({ id, title, img, price, category }) => {
@@ -82,22 +86,22 @@ const productModel = {
         })
     },
 
-    // DELETE
-    // untuk remove tergantung paramnya saja, untuk kasus dibawah ini yaitu id.
-    remove: (id) => {
-        return new Promise((resolve, reject) => {
-            db.query(
-                `DELETE from products WHERE id='${id}'`,
-                (err, result) => {
-                    if (err) {
-                        return reject(err.message)
-                    } else {
-                        return resolve(`products ${id} has been deleted`)
+        // DELETE
+        // untuk remove tergantung paramnya saja, untuk kasus dibawah ini yaitu id.
+        remove: (id) => {
+            return new Promise((resolve, reject) => {
+                db.query(
+                    `DELETE from products WHERE id='${id}'`,
+                    (err, result) => {
+                        if (err) {
+                            return reject(err.message)
+                        } else {
+                            return resolve(`products ${id} has been deleted`)
+                        }
                     }
-                }
-            )
-        })
-    }
+                )
+            })
+        }
 }
 
 module.exports = productModel
